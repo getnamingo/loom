@@ -104,7 +104,7 @@ fi
 
 # Clone the new version of the repository
 echo "Cloning new version from the repository..."
-git clone https://github.com/getargora/loom /tmp/loom
+git clone https://github.com/getnamingo/loom /tmp/loom
 
 # Copy files from the new version to the appropriate directories
 echo "Copying files..."

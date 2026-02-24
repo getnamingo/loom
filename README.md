@@ -1,12 +1,12 @@
-# Argora Loom
+# Loom
 
 [![StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
 
 [![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
 
-**Argora Loom** is a powerful yet lightweight platform for managing domains, DNS zones, servers, resellers, and billing — all in one unified interface. It includes a built-in order and invoice system, allowing users to request services like domain registrations or server plans, which are then processed and provisioned via EPP or other APIs.
+**Loom** is a powerful yet lightweight platform for managing domains, DNS zones, servers, resellers, and billing — all in one unified interface. It includes a built-in order and invoice system, allowing users to request services like domain registrations or server plans, which are then processed and provisioned via EPP or other APIs.
 
-While easy to use and modular by design, Argora Loom is also in active development to support the full feature set required by **ICANN-accredited registrars**, including escrow, RDAP, contact validation, and reporting tools.
+While easy to use and modular by design, Loom is also in active development to support the full feature set required by **ICANN-accredited registrars**, including escrow, RDAP, contact validation, and reporting tools.
 
 It’s ideal for self-hosted registrars, resellers, and service providers who want flexibility, control, and a clean starting point without the bloat.
 
@@ -24,7 +24,7 @@ It’s ideal for self-hosted registrars, resellers, and service providers who wa
 
 ## Supported Providers
 
-Argora Loom works with a variety of external services through its modular architecture.
+Loom works with a variety of external services through its modular architecture.
 
 ### Domain Registries
 
@@ -77,17 +77,17 @@ Argora Loom works with a variety of external services through its modular archit
 
 ## Get Involved
 
-Argora Loom is open source — and we’d love your help!
+Loom is open source — and we’d love your help!
 
 Whether you're a developer, designer, registrar, or just exploring alternatives to commercial control panels, here's how you can contribute:
 
-- [Report bugs or issues](https://github.com/argora/loom/issues)
+- [Report bugs or issues](https://github.com/getnamingo/loom/issues)
 - Suggest features and improvements
 - Build and contribute new modules
 - Help with language translations
 - Improve documentation or write guides
 
-> Planning to launch your own registrar? Argora Loom can grow with you — from simple reseller setups to full ICANN accreditation support.
+> Planning to launch your own registrar? Loom can grow with you — from simple reseller setups to full ICANN accreditation support.
 
 ## Documentation
 
@@ -98,7 +98,7 @@ Whether you're a developer, designer, registrar, or just exploring alternatives 
 To get started, copy the command below and paste it into your server terminal:
 
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/getargora/loom/refs/heads/main/docs/install.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/getnamingo/loom/refs/heads/main/docs/install.sh)
 ```
 
 For detailed installation steps, see [install.md](docs/install.md)
@@ -108,7 +108,7 @@ For detailed installation steps, see [install.md](docs/install.md)
 To get started, copy the command below and paste it into your server terminal:
 
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/getargora/loom/refs/heads/main/docs/update.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/getnamingo/loom/refs/heads/main/docs/update.sh)
 ```
 
 ## Support
@@ -119,7 +119,7 @@ Your feedback and inquiries are invaluable to Loom's evolutionary journey. If yo
 
 - **Discord**: Or chat with us on our [Discord](https://discord.gg/97R9VCrWgc) channel.
   
-- **GitHub Issues**: For bug reports or feature requests, please use the [Issues](https://github.com/argora/loom/issues) section of our GitHub repository.
+- **GitHub Issues**: For bug reports or feature requests, please use the [Issues](https://github.com/getnamingo/loom/issues) section of our GitHub repository.
 
 ## Acknowledgements
 

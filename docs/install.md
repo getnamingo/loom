@@ -224,7 +224,7 @@ Replace `loom` with your desired username and `RANDOM_STRONG_PASSWORD` with a se
 ## 5. Download Loom:
 
 ```bash
-git clone https://github.com/getargora/loom.git /var/www/loom
+git clone https://github.com/getnamingo/loom.git /var/www/loom
 ```
 
 ## 6. Setup Loom:
