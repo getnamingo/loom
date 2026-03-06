@@ -16,10 +16,36 @@ require_root() {
 detect_os() {
   . /etc/os-release
   OS_ID="$ID"            # ubuntu/debian
-  OS_VER="$VERSION_ID"   # e.g. 22.04, 24.04, 12, 13
+  VER="$VERSION_ID"   # e.g. 22.04, 24.04, 12, 13
   OS_CODENAME="${VERSION_CODENAME:-}"
   log "Detected: $PRETTY_NAME"
 }
+
+# Minimum requirements
+MIN_RAM_MB=1900
+MIN_DISK_GB=10
+
+# Get the available RAM in MB
+AVAILABLE_RAM_MB=$(free -m | awk '/^Mem:/{print $2}')
+PHP_MEMORY_MB=$(( AVAILABLE_RAM_MB / 2 ))
+PHP_MEMORY_LIMIT="${PHP_MEMORY_MB}M"
+
+# Get the available disk space in GB for the root partition
+AVAILABLE_DISK_GB=$(df -BG / | awk 'NR==2 {print $4}' | sed 's/G//')
+
+# Check RAM
+if [ "$AVAILABLE_RAM_MB" -lt "$MIN_RAM_MB" ]; then
+    echo "Error: At least 2GB of RAM is required. Only ${AVAILABLE_RAM_MB}MB is available."
+    exit 1
+fi
+
+# Check disk space
+if [ "$AVAILABLE_DISK_GB" -lt "$MIN_DISK_GB" ]; then
+    echo "Error: At least 10GB of free disk space is required. Only ${AVAILABLE_DISK_GB}GB is available."
+    exit 1
+fi
+
+echo "System meets the minimum requirements. Proceeding with installation..."
 
 # Return best-guess A/AAAA for bind (optional)
 detect_ips() {
