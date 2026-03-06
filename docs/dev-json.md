@@ -10,7 +10,7 @@
         "password": "your-epp-password"
     },
     "client_id": "EXAMPLE-REG",
-    "contactRoles": ["registrant", "admin", "tech", "billing"]
+    "contactRoles": ["registrant", "admin", "tech", "billing"],
     "required_fields": {
         "id_number": {
             "label": "Finnish ID Number",

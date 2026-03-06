@@ -3,40 +3,6 @@
 {% block title %}{{ __('Create Order') }}{% endblock %}
 
 {% block content %}
-<style>
-      @media (max-width: 575.98px) {
-        .pricing-table thead { 
-          display: none; 
-        }
-        .pricing-table tbody tr { 
-          display: block; 
-          margin-bottom: .75rem; 
-          border: 1px solid var(--tblr-border-color, rgba(0,0,0,.125)); 
-          border-radius: .5rem; 
-          background: #fff;
-          overflow: hidden;
-        }
-        .pricing-table tbody td {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: .75rem 1rem;
-          border: 0 !important;
-          border-top: 1px solid var(--tblr-border-color, rgba(0,0,0,.075)) !important;
-        }
-        .pricing-table tbody td:first-child {
-          border-top: 0 !important;
-          font-weight: 600;
-          background: var(--tblr-bg-surface, #f8f9fa);
-        }
-        .pricing-table tbody td::before {
-          content: attr(data-label);
-          font-weight: 500;
-          margin-right: 1rem;
-          opacity: .8;
-        }
-      }
-</style>
       <div class="page-wrapper">
         <!-- Page header -->
         <div class="page-header d-print-none">
@@ -86,45 +52,60 @@
             {% if domainProducts|length > 0 %}
             <div class="card mb-4">
               <div class="card-body">
-                <h3 class="card-title">{{ __('Find Your Perfect Domain') }}</h3>
-                <p class="text-muted">{{ __('Start your online journey by searching for an available domain.') }}</p>
-                <div class="card">
+                <div class="card mt-4">
                   <div class="card-body">
                     <form class="row g-2 align-items-stretch" onsubmit="checkDomain(event)">
                       <div class="col-md-9">
-                        <input type="text" id="domainInput" class="form-control form-control-lg rounded" placeholder="example.com" autocapitalize="none" required>
+                        <input type="text" id="domainInput" class="form-control form-control-lg rounded" placeholder="Enter your domain name" aria-label="Domain Name" autocapitalize="none" required>
                       </div>
                       <div class="col-md-3 d-grid">
-                        <button class="btn btn-primary btn-lg w-100 rounded" type="submit">{{ __('Check') }}</button>
+                        <button class="btn btn-primary btn-lg w-100 rounded" type="submit">{{ __('Search') }}</button>
                       </div>
                     </form>
-                    <div id="resultContainer" class="mt-4"></div>
+                    <div id="resultContainer" class="mt-4">
+                      <p class="text-muted text-center" id="info-text">Search for your perfect domain name.</p>
+                    </div>
                   </div>
                 </div>
                 {% if domainPricingTable|length > 0 %}
-                <div class="card mt-4">
+                <div id="tld-pricing-card" class="card mt-3">
                   <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table table-striped pricing-table">
-                        <thead>
-                          <tr>
-                            <th>{{ __('Domain') }}</th>
-                            <th>{{ __('Registration') }}</th>
-                            <th>{{ __('Renewal') }}</th>
-                            <th>{{ __('Transfer') }}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {% for row in domainPricingTable %}
-                            <tr>
-                              <td data-label="{{ __('Domain') }}"><strong>{{ row.tld }}</strong></td>
-                              <td data-label="{{ __('Registration') }}">{{ row.register ? (row.register ~ ' ' ~ currency) : '-' }}</td>
-                              <td data-label="{{ __('Renewal') }}">{{ row.renew ? (row.renew ~ ' ' ~ currency) : '-' }}</td>
-                              <td data-label="{{ __('Transfer') }}">{{ row.transfer ? (row.transfer ~ ' ' ~ currency) : '-' }}</td>
-                            </tr>
-                          {% endfor %}
-                        </tbody>
-                      </table>
+                    <div class="row row-cards justify-content-center">
+                      {% for row in domainPricingTable %}
+                        <div class="col-12 col-md-6 col-lg-4">
+                          <div class="card card-sm h-100">
+                            <div class="card-body">
+                              <div class="d-flex align-items-center justify-content-between">
+                                <div class="h2 fw-bold text-primary m-0">{{ row.tld }}</div>
+                                <span class="text-muted small">{{ __('per year') }}</span>
+                              </div>
+
+                              <div class="hr my-3"></div>
+
+                              <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="text-secondary">{{ __('Registration') }}</div>
+                                <div class="fw-bold text-primary">
+                                  {{ row.register ? (row.register ~ ' ' ~ currency) : '—' }}
+                                </div>
+                              </div>
+
+                              <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="text-secondary">{{ __('Renewal') }}</div>
+                                <div class="fw-semibold">
+                                  {{ row.renew ? (row.renew ~ ' ' ~ currency) : '—' }}
+                                </div>
+                              </div>
+
+                              <div class="d-flex align-items-center justify-content-between">
+                                <div class="text-secondary">{{ __('Transfer') }}</div>
+                                <div class="fw-semibold">
+                                  {{ row.transfer ? (row.transfer ~ ' ' ~ currency) : '—' }}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      {% endfor %}
                     </div>
                   </div>
                 </div>
