@@ -446,27 +446,24 @@ class HomeController extends Controller
         $db = $this->container->get('db');
         $isAdmin = $_SESSION["auth_roles"] == 0;
         $userId = $_SESSION["auth_user_id"];
+        $user = $db->selectRow('SELECT currency, account_balance FROM users WHERE id = ?', [$userId]);
 
         if ($isAdmin) {
             // Admin: total counts
-            $userCount = $db->selectValue('SELECT COUNT(*) FROM users');
             $orderCount = $db->selectValue('SELECT COUNT(*) FROM orders');
             $invoiceCount = $db->selectValue('SELECT COUNT(*) FROM invoices');
             $ticketCount = $db->selectValue('SELECT COUNT(*) FROM support_tickets');
             $serviceCount = $db->selectValue('SELECT COUNT(*) FROM services');
-            $providerCount = $db->selectValue('SELECT COUNT(*) FROM providers');
 
             $pendingOrders = $db->selectValue('SELECT COUNT(*) FROM orders WHERE status = ?', ['pending']);
             $unpaidInvoices = $db->selectValue('SELECT COUNT(*) FROM invoices WHERE payment_status = ?', ['unpaid']);
             $openTickets = $db->selectValue('SELECT COUNT(*) FROM support_tickets WHERE status = ?', ['Open']);
         } else {
             // Regular user: filtered by user_id
-            $userCount = null; // Don't send this to view for users
             $orderCount = $db->selectValue('SELECT COUNT(*) FROM orders WHERE user_id = ?', [$userId]);
             $invoiceCount = $db->selectValue('SELECT COUNT(*) FROM invoices WHERE user_id = ?', [$userId]);
             $ticketCount = $db->selectValue('SELECT COUNT(*) FROM support_tickets WHERE user_id = ?', [$userId]);
             $serviceCount = $db->selectValue('SELECT COUNT(*) FROM services WHERE user_id = ?', [$userId]);
-            $providerCount = null; // Don't send this to view for users
 
             $pendingOrders = $db->selectValue('SELECT COUNT(*) FROM orders WHERE user_id = ? AND status = ?', [$userId, 'pending']);
             $unpaidInvoices = $db->selectValue('SELECT COUNT(*) FROM invoices WHERE user_id = ? AND payment_status = ?', [$userId, 'unpaid']);
@@ -474,15 +471,14 @@ class HomeController extends Controller
         }
 
         return view($response, 'admin/dashboard/index.twig', [
-            'userCount' => $userCount,
             'orderCount' => $orderCount,
             'invoiceCount' => $invoiceCount,
             'ticketCount' => $ticketCount,
             'pendingOrders' => $pendingOrders,
             'unpaidInvoices' => $unpaidInvoices,
             'openTickets' => $openTickets,
-            'serviceCount' => $serviceCount,
-            'providerCount' => $providerCount
+            'user' => $user,
+            'serviceCount' => $serviceCount
         ]);
     }
 

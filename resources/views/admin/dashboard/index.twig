@@ -37,20 +37,24 @@
           <div class="container-xl">
             <div class="col-12">
             {% include 'partials/flash.twig' %}
-              <div class="row row-cards">
+              <div class="row row-cards mb-3">
                 <div class="col-sm-6 col-lg-3">
                   <a class="card card-link" href="{{route('listOrders')}}">
                     <div class="card-body">
                       <div class="row align-items-center">
                         <div class="col-auto">
-                          <span class="bg-orange text-white avatar avatar-lg">
+                          <span class="bg-orange-lt text-orange avatar avatar-md">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
                           </span>
                         </div>
                         <div class="col">
-                          <div class="font-weight-medium">
-                            <span class="h1 mt-3">{{ orderCount }} {{ __('Orders') }}</span>
-                            <span class="float-end font-weight-medium text-orange">{{ pendingOrders }} {{ __('pending') }}</span>
+                          <div>
+                            <div class="h1 m-0">
+                              {{ orderCount }} {{ __('Orders') }}
+                            </div>
+                            <div class="text-muted small opacity-75">
+                              {{ pendingOrders }} {{ __('pending') }}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -62,13 +66,18 @@
                     <div class="card-body">
                       <div class="row align-items-center">
                         <div class="col-auto">
-                          <span class="bg-teal text-white avatar avatar-lg">
+                          <span class="bg-green-lt text-green avatar avatar-md">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></svg>
                           </span>
                         </div>
                         <div class="col">
-                          <div class="font-weight-medium">
-                            <span class="h1 mt-3">{{ serviceCount }} {{ __('Services') }}</span>
+                          <div>
+                            <div class="h1 m-0">
+                              {{ serviceCount }} {{ __('Services') }}
+                            </div>
+                            <div class="text-muted small opacity-75 invisible">
+                              placeholder
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -80,74 +89,80 @@
                     <div class="card-body">
                       <div class="row align-items-center">
                         <div class="col-auto">
-                          <span class="bg-indigo text-white avatar avatar-lg">
+                          <span class="bg-blue-lt text-blue avatar avatar-md">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" /><path d="M9 7l1 0" /><path d="M9 13l6 0" /><path d="M13 17l2 0" /></svg>
                           </span>
                         </div>
                         <div class="col">
-                          <div class="font-weight-medium">
-                            <span class="h1 mt-3">{{ invoiceCount }} {{ __('Invoices') }}</span>
-                            <span class="float-end font-weight-medium text-indigo">{{ unpaidInvoices }} {{ __('unpaid') }}</span>
+                          <div>
+                            <div class="h1 m-0">
+                              {{ invoiceCount }} {{ __('Invoices') }}
+                            </div>
+                            <div class="text-muted small opacity-75">
+                              {{ unpaidInvoices }} {{ __('unpaid') }}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </a>
                 </div>
-                {% if roles == 0 %}<div class="col-sm-6 col-lg-3">
-                  <a class="card card-link" href="{{route('listProviders')}}">
-                    <div class="card-body">
-                      <div class="row align-items-center">
-                        <div class="col-auto">
-                          <span class="bg-azure text-white avatar avatar-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0" /><path d="M3 7v1a3 3 0 0 0 6 0v-1m0 1a3 3 0 0 0 6 0v-1m0 1a3 3 0 0 0 6 0v-1h-18l2 -4h14l2 4" /><path d="M5 21l0 -10.15" /><path d="M19 21l0 -10.15" /><path d="M9 21v-4a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v4" /></svg>
-                            </span>
-                        </div>
-                        <div class="col">
-                          <div class="font-weight-medium">
-                            <span class="h1 mt-3">{{ providerCount }} {{ __('Providers') }}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </a>
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                  <a class="card card-link" href="{{route('listUsers')}}">
-                    <div class="card-body">
-                      <div class="row align-items-center">
-                        <div class="col-auto">
-                          <span class="bg-blue text-white avatar avatar-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></svg>
-                          </span>
-                        </div>
-                        <div class="col">
-                          <div class="font-weight-medium">
-                            <span class="h1 mt-3">{{ userCount }} {{ __('Users') }}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </a>
-                </div>{% endif %}
                 <div class="col-sm-6 col-lg-3">
                   <a class="card card-link" href="{{route('ticketview')}}">
                     <div class="card-body">
                       <div class="row align-items-center">
                         <div class="col-auto">
-                          <span class="bg-pink text-white avatar avatar-lg">
+                          <span class="bg-red-lt text-red avatar avatar-md">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path><path d="M15 15l3.35 3.35"></path><path d="M9 15l-3.35 3.35"></path><path d="M5.65 5.65l3.35 3.35"></path><path d="M18.35 5.65l-3.35 3.35"></path></svg>
                           </span>
                         </div>
                         <div class="col">
-                          <div class="font-weight-medium">
-                            <span class="h1 mt-3">{{ ticketCount }} {{ __('Tickets') }}</span>
-                            <span class="float-end font-weight-medium text-pink">{{ openTickets }} {{ __('unanswered') }}</span>
+                          <div>
+                            <div class="h1 m-0">
+                              {{ ticketCount }} {{ __('Tickets') }}
+                            </div>
+                            <div class="text-muted small opacity-75">
+                              {{ openTickets }} {{ __('unanswered') }}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </a>
+                </div>
+              </div>
+              <div class="row row-cards mb-3">
+                <div class="col-12">
+                  <div class="card card-sm">
+                    <div class="card-body">
+                      <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3 min-w-0">
+                          <span class="avatar avatar-sm avatar-md bg-azure-lt text-azure">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></svg>
+                          </span>
+                          <div class="min-w-0">
+                            <div class="fw-semibold text-truncate">
+                              {{auth.user.email}}
+                            </div>
+                            <div class="text-muted small">
+                              {{ __('Client ID') }} #{{auth.user.id}}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between w-100 gap-3 ms-md-auto justify-content-md-end">
+                          <div class="text-start text-md-end">
+                            <div class="text-muted small">{{ __('Balance') }}</div>
+                            <div class="fw-bold">
+                              {{user.currency}} {{user.account_balance}}
+                            </div>
+                          </div>
+                          <a href="{{route('profile')}}" class="btn btn-outline-primary btn-sm">
+                            {{ __('Update') }}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
