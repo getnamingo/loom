@@ -87,6 +87,7 @@ class FinancialsController extends Controller
 
         $orders = null;
         $deposit = null;
+        $locale = $_SESSION['_lang'] ?? 'en_US'; // Fallback to 'en_US' if no locale is set
 
         if ($invoice_details['invoice_type'] === 'deposit') {
             $deposit = $db->selectRow(
@@ -103,9 +104,7 @@ class FinancialsController extends Controller
                 [ $invoice_details['id'] ]
             );
 
-            $locale = $_SESSION['_lang'] ?? 'en_US'; // Fallback to 'en_US' if no locale is set
             $currencyFormatterStatement = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
-
             foreach ($orders as &$order) {
                 $order['service_data'] = json_decode($order['service_data'], true);
                 $order['amount_formatted'] = $currencyFormatterStatement->formatCurrency($order['amount_due'], $order['currency']);
