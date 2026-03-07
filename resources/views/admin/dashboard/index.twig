@@ -46,8 +46,8 @@
                             <div class="h1 m-0">
                               {{ serviceCount }} {{ __('Services') }}
                             </div>
-                            <div class="text-muted small opacity-75 invisible">
-                              placeholder
+                            <div class="text-muted small opacity-75">
+                              {{ expiringServices }} {{ __('expiring') }}
                             </div>
                           </div>
                         </div>
@@ -60,7 +60,7 @@
                     <div class="card-body">
                       <div class="row align-items-center">
                         <div class="col-auto">
-                          <span class="bg-blue-lt text-blue avatar avatar-md">
+                          <span class="bg-indigo-lt text-indigo avatar avatar-md">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" /><path d="M9 7l1 0" /><path d="M9 13l6 0" /><path d="M13 17l2 0" /></svg>
                           </span>
                         </div>
@@ -108,7 +108,7 @@
                     <div class="card-body">
                       <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                         <div class="d-flex align-items-center gap-3 min-w-0">
-                          <span class="avatar avatar-sm avatar-md bg-azure-lt text-azure">
+                          <span class="avatar avatar-sm avatar-md bg-primary-lt text-primary">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></svg>
                           </span>
                           <div class="min-w-0">
@@ -133,6 +133,117 @@
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row row-cards">
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header py-3">
+                      <div class="d-flex align-items-center justify-content-between w-100">
+                        <h3 class="card-title mb-0">{{ __('Recent orders') }}</h3>
+                        <div class="btn-list">
+                          <a href="{{ route('listOrders') }}" class="btn btn-sm btn-outline-secondary">
+                            {{ __('All orders') }}
+                          </a>
+                          <a href="{{ route('createOrder') }}" class="btn btn-sm btn-primary btn-animate-icon btn-animate-icon-rotate">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                            {{ __('New order') }}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    {% if orders %}
+                      <div class="list-group list-group-flush">
+                        {% for order in orders %}
+                          <a href="/order/{{order.id}}" class="list-group-item py-3 list-group-item-action text-reset">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <div class="d-flex flex-column text-truncate">
+                                <div class="d-flex align-items-center gap-2">
+                                  <span class="fw-bold">#{{ order.id }}</span>
+                                  <span>{{ order.service_type|replace({'.': ' '})|title }}</span>
+                                </div>
+                                <span class="text-secondary small">
+                                  {{ order.created_at|split('.')[0] }}
+                                </span>
+                              </div>
+                              <div class="d-flex align-items-center gap-3">
+                                <div class="text-secondary text-end">
+                                  <span class="badge
+                                    {% if order.status == 'active' %}bg-success text-success-fg
+                                    {% elseif order.status == 'pending' or order.status == 'pending_setup' %}bg-warning text-warning-fg
+                                    {% elseif order.status == 'failed' or order.status == 'failed_setup' or order.status == 'failed_renew' or order.status == 'suspended' %}bg-danger text-danger-fg
+                                    {% elseif order.status == 'canceled' %}bg-secondary text-secondary-fg
+                                    {% else %}bg-azure text-azure-fg
+                                    {% endif %}">
+                                    {{ order.status|replace({'_': ' '})|title }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </a>
+                        {% endfor %}
+                      </div>
+                    {% else %}
+                      <div class="d-flex justify-content-center my-2 p-2">
+                        <span class="m-0">{{ __('No recent orders') }}</span>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header py-3">
+                      <div class="d-flex align-items-center justify-content-between w-100">
+                        <h3 class="card-title mb-0">{{ __('Support tickets') }}</h3>
+                        <div class="btn-list">
+                          <a href="{{ route('ticketview') }}" class="btn btn-sm btn-outline-secondary">
+                            {{ __('All tickets') }}
+                          </a>
+                          <a href="{{ route('newticket') }}" class="btn btn-sm btn-primary btn-animate-icon btn-animate-icon-rotate">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                            {{ __('New ticket') }}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    {% if tickets %}
+                      <div class="list-group list-group-flush">
+                        {% for ticket in tickets %}
+                          <a href="/ticket/{{ticket.id}}" class="list-group-item py-3 list-group-item-action text-reset">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <div class="d-flex flex-column text-truncate">
+                                <div class="d-flex align-items-center gap-2">
+                                  <span class="fw-bold">#{{ ticket.id }}</span>
+                                  <span>{{ ticket.subject }}</span>
+                                </div>
+                                <span class="text-secondary small">
+                                  {{ ticket.date_created|split('.')[0] }}
+                                </span>
+                              </div>
+                              <div class="d-flex align-items-center gap-3">
+                                <div class="text-secondary text-end">
+                                  <span class="badge
+                                    {% if ticket.status|lower == 'open' %}bg-success text-success-fg
+                                    {% elseif ticket.status|lower == 'on_hold' or ticket.status|lower == 'pending' %}bg-warning text-warning-fg
+                                    {% elseif ticket.status|lower == 'closed' %}bg-secondary text-secondary-fg
+                                    {% else %}bg-azure text-azure-fg
+                                    {% endif %}">
+                                    {{ ticket.status|replace({'_': ' '})|title }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </a>
+                        {% endfor %}
+                      </div>
+                    {% else %}
+                      <div class="d-flex justify-content-center my-2 p-2">
+                        <span class="m-0">{{ __('No recent support tickets') }}</span>
+                      </div>
+                    {% endif %}
                   </div>
                 </div>
               </div>

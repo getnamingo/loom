@@ -448,6 +448,9 @@ class HomeController extends Controller
         $userId = $_SESSION["auth_user_id"];
         $user = $db->selectRow('SELECT currency, account_balance FROM users WHERE id = ?', [$userId]);
 
+        $now = (new \DateTime())->format('Y-m-d H:i:s');
+        $expiresIn30 = (new \DateTime('+30 days'))->format('Y-m-d H:i:s');
+
         if ($isAdmin) {
             // Admin: total counts
             $orderCount = $db->selectValue('SELECT COUNT(*) FROM orders');
@@ -458,6 +461,20 @@ class HomeController extends Controller
             $pendingOrders = $db->selectValue('SELECT COUNT(*) FROM orders WHERE status = ?', ['pending']);
             $unpaidInvoices = $db->selectValue('SELECT COUNT(*) FROM invoices WHERE payment_status = ?', ['unpaid']);
             $openTickets = $db->selectValue('SELECT COUNT(*) FROM support_tickets WHERE status = ?', ['Open']);
+            $expiringServices = $db->selectValue('SELECT COUNT(*) FROM services WHERE expires_at BETWEEN ? AND ?', [$now, $expiresIn30]);
+
+            $recentOrders = $db->select(
+                'SELECT id, service_type, status, created_at
+                 FROM orders
+                 ORDER BY created_at DESC
+                 LIMIT 5'
+            );
+            $recentTickets = $db->select(
+                'SELECT id, subject, status, date_created
+                 FROM support_tickets
+                 ORDER BY date_created DESC
+                 LIMIT 5'
+            );
         } else {
             // Regular user: filtered by user_id
             $orderCount = $db->selectValue('SELECT COUNT(*) FROM orders WHERE user_id = ?', [$userId]);
@@ -468,6 +485,20 @@ class HomeController extends Controller
             $pendingOrders = $db->selectValue('SELECT COUNT(*) FROM orders WHERE user_id = ? AND status = ?', [$userId, 'pending']);
             $unpaidInvoices = $db->selectValue('SELECT COUNT(*) FROM invoices WHERE user_id = ? AND payment_status = ?', [$userId, 'unpaid']);
             $openTickets = $db->selectValue('SELECT COUNT(*) FROM support_tickets WHERE user_id = ? AND status = ?', [$userId, 'Open']);
+            $expiringServices = $db->selectValue('SELECT COUNT(*) FROM services WHERE user_id = ? AND expires_at BETWEEN ? AND ?', [$userId, $now, $expiresIn30]);
+
+            $recentOrders = $db->select(
+                'SELECT id, service_type, status, created_at
+                 FROM orders WHERE user_id = ?
+                 ORDER BY created_at DESC
+                 LIMIT 5', [$userId]
+            );
+            $recentTickets = $db->select(
+                'SELECT id, subject, status, date_created
+                 FROM support_tickets WHERE user_id = ?
+                 ORDER BY date_created DESC
+                 LIMIT 5', [$userId]
+            );
         }
 
         return view($response, 'admin/dashboard/index.twig', [
@@ -478,7 +509,10 @@ class HomeController extends Controller
             'unpaidInvoices' => $unpaidInvoices,
             'openTickets' => $openTickets,
             'user' => $user,
-            'serviceCount' => $serviceCount
+            'serviceCount' => $serviceCount,
+            'expiringServices' => $expiringServices,
+            'orders' => $recentOrders,
+            'tickets' => $recentTickets,
         ]);
     }
 
