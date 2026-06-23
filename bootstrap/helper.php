@@ -827,6 +827,15 @@ function provisionService(\Pinga\Db\PdoDatabase $db, int $invoiceId, int $actorI
                     if (isset($roleContactIds[$role])) continue;
 
                     $rc  = $serviceData['contacts'][$role] ?? [];
+
+                    if ($role !== 'registrant' && (empty($rc['name']) || empty($rc['email']))) {
+                        if (!empty($roleContactIds['registrant'])) {
+                            $roleContactIds[$role] = $roleContactIds['registrant'];
+                            $serviceData['contacts'][$role]['registry_id'] = $roleContactIds['registrant'];
+                            continue;
+                        }
+                    }
+
                     $key = $fp($rc);
 
                     // If identical data was already used for another role, reuse that contact
