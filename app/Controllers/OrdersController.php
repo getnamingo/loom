@@ -54,9 +54,21 @@ class OrdersController extends Controller
                     [ $order['user_id'] ]
                 );
 
+                $domain_name = $service_data['domain'] ?? '';
+
+                $service_id = '';
+                if ($domain_name !== '') {
+                    $service_id = $db->selectValue(
+                        'SELECT id FROM services WHERE service_name = ? AND order_id = ? LIMIT 1',
+                        [ $domain_name, $order['id'] ]
+                    ) ?: '';
+                }
+
                 $responseData = [
                     'order' => $order,
                     'service_data' => $service_data,
+                    'domain_name' => $domain_name,
+                    'service_id' => $service_id,
                     'user_name' => $user_name,
                     'currentUri' => $uri
                 ];

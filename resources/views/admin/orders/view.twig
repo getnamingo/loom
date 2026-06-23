@@ -154,7 +154,15 @@
                     {% if service_data.type == 'domain_register' %}
                     <div class="datagrid-item">
                       <div class="datagrid-title">{{ __('Domain Name') }}</div>
-                      <div class="datagrid-content"><strong>{{ service_data.domain }}</strong></div>
+                      <div class="datagrid-content">
+                          <strong>
+                                {% if order.status == 'active' and service_id %}
+                                    <a href="/services/{{ service_id }}/edit">{{ domain_name }}</a>
+                              {% else %}
+                                  {{ domain_name }}
+                              {% endif %}
+                          </strong>
+                      </div>
                     </div>
                     <div class="datagrid-item">
                       <div class="datagrid-title">{{ __('Years') }}</div>
@@ -169,7 +177,15 @@
                     {% elseif service_data.type == 'domain_transfer' %}
                     <div class="datagrid-item">
                       <div class="datagrid-title">{{ __('Domain Name') }}</div>
-                      <div class="datagrid-content"><strong>{{ service_data.domain }}</strong></div>
+                      <div class="datagrid-content">
+                          <strong>
+                              {% if order.status == 'active' and service_id %}
+                                  <a href="/services/{{ service_id }}/edit">{{ domain_name }}</a>
+                              {% else %}
+                                  {{ domain_name }}
+                              {% endif %}
+                          </strong>
+                      </div>
                     </div>
                     {% elseif service_data.type == 'domain_renew' %}
                     <div class="datagrid-item">
