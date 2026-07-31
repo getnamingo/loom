@@ -5,12 +5,12 @@ umask 022
 
 # Ensure the script is run as root
 if [[ $EUID -ne 0 ]]; then
-    echo "Error: This update script must be run as root or with sudo." >&2
+    echo "Error: This upgrade script must be run as root or with sudo." >&2
     exit 1
 fi
 
 # Prompt the user for confirmation
-echo "This will update Loom"
+echo "This will upgrade Loom"
 echo "Make sure you have a backup of the database and the Loom directory."
 read -p "Are you sure you want to proceed? (y/n): " confirm
 
