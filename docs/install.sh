@@ -81,7 +81,6 @@ install_php_repo() {
     apt update
     apt install -y curl software-properties-common ca-certificates gnupg
     add-apt-repository -y ppa:ondrej/php
-    add-apt-repository -y ppa:ondrej/nginx
   elif [[ "$OS_ID" == "debian" ]]; then
     apt update
     apt install -y ca-certificates curl gnupg lsb-release
@@ -91,12 +90,6 @@ install_php_repo() {
       | gpg --dearmor -o /usr/share/keyrings/sury-php.gpg
     echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" \
       > /etc/apt/sources.list.d/sury-php.list
-
-    # Nginx mainline (official)
-    curl -fsSL https://nginx.org/keys/nginx_signing.key \
-      | gpg --dearmor -o /usr/share/keyrings/nginx.gpg
-    echo "deb [signed-by=/usr/share/keyrings/nginx.gpg] http://nginx.org/packages/mainline/debian $(lsb_release -sc) nginx" \
-      > /etc/apt/sources.list.d/nginx.list
   else
     echo "Unsupported OS: ${OS_ID:-unknown} ${VER:-unknown}"
     exit 1
@@ -138,7 +131,6 @@ log "Basic configuration"
 
 DEFAULT_HOST="loom.local"
 prompt HOSTNAME "Enter the domain where the system will live (e.g., example.com or cp.example.com)" "$DEFAULT_HOST"
-prompt TLS_EMAIL "Enter email for Caddy TLS/Cert notifications" "admin@$HOSTNAME"
 prompt INSTALL_PATH "Install path for Loom" "/var/www/loom"
 
 # DB choice
@@ -178,31 +170,31 @@ else
   CADDY_BIND_LINE=""
 fi
 
-# ---------- PHP 8.3 repos ----------
-log "Configuring PHP 8.3 repository…"
+# ---------- PHP 8.5 repos ----------
+log "Configuring PHP 8.5 repository…"
 # Install necessary packages
 install_php_repo
 apt update
 
 log "Installing PHP"
-apt install -y composer php8.3 php8.3-cli php8.3-common php8.3-fpm php8.3-bcmath php8.3-bz2 php8.3-curl php8.3-ds php8.3-gd php8.3-gmp php8.3-igbinary php8.3-imap php8.3-intl php8.3-mbstring php8.3-opcache php8.3-readline php8.3-redis php8.3-soap php8.3-swoole php8.3-uuid php8.3-xml php8.3-zip ufw git unzip bzip2 net-tools whois
+apt install -y composer php8.5 php8.5-cli php8.5-common php8.5-fpm php8.5-bcmath php8.5-bz2 php8.5-curl php8.5-ds php8.5-gd php8.5-gmp php8.5-igbinary php8.5-imap php8.5-intl php8.5-mbstring php8.5-readline php8.5-redis php8.5-soap php8.5-swoole php8.5-uuid php8.5-xml php8.5-zip ufw git unzip bzip2 net-tools whois
 
 # Update php.ini (FPM)
-set_php_ini_value "/etc/php/8.3/fpm/php.ini" "session.cookie_secure" "1"
-set_php_ini_value "/etc/php/8.3/fpm/php.ini" "session.cookie_httponly" "1"
-set_php_ini_value "/etc/php/8.3/fpm/php.ini" "session.cookie_samesite" "\"Strict\""
-set_php_ini_value "/etc/php/8.3/fpm/php.ini" "memory_limit" "$PHP_MEMORY_LIMIT"
+set_php_ini_value "/etc/php/8.5/fpm/php.ini" "session.cookie_secure" "1"
+set_php_ini_value "/etc/php/8.5/fpm/php.ini" "session.cookie_httponly" "1"
+set_php_ini_value "/etc/php/8.5/fpm/php.ini" "session.cookie_samesite" "\"Strict\""
+set_php_ini_value "/etc/php/8.5/fpm/php.ini" "memory_limit" "$PHP_MEMORY_LIMIT"
 
-set_php_ini_value "/etc/php/8.3/mods-available/opcache.ini" "opcache.enable" "1"
-set_php_ini_value "/etc/php/8.3/mods-available/opcache.ini" "opcache.enable_cli" "1"
-set_php_ini_value "/etc/php/8.3/mods-available/opcache.ini" "opcache.jit_buffer_size" "100M"
-set_php_ini_value "/etc/php/8.3/mods-available/opcache.ini" "opcache.jit" "1255"
-set_php_ini_value "/etc/php/8.3/mods-available/opcache.ini" "opcache.memory_consumption" "128"
-set_php_ini_value "/etc/php/8.3/mods-available/opcache.ini" "opcache.interned_strings_buffer" "16"
-set_php_ini_value "/etc/php/8.3/mods-available/opcache.ini" "opcache.max_accelerated_files" "10000"
-set_php_ini_value "/etc/php/8.3/mods-available/opcache.ini" "opcache.validate_timestamps" "0"
+set_php_ini_value "/etc/php/8.5/fpm/php.ini" "opcache.enable" "1"
+set_php_ini_value "/etc/php/8.5/fpm/php.ini" "opcache.enable_cli" "1"
+set_php_ini_value "/etc/php/8.5/fpm/php.ini" "opcache.jit_buffer_size" "100M"
+set_php_ini_value "/etc/php/8.5/fpm/php.ini" "opcache.jit" "1255"
+set_php_ini_value "/etc/php/8.5/fpm/php.ini" "opcache.memory_consumption" "128"
+set_php_ini_value "/etc/php/8.5/fpm/php.ini" "opcache.interned_strings_buffer" "16"
+set_php_ini_value "/etc/php/8.5/fpm/php.ini" "opcache.max_accelerated_files" "10000"
+set_php_ini_value "/etc/php/8.5/fpm/php.ini" "opcache.validate_timestamps" "0"
 
-systemctl restart php8.3-fpm
+systemctl restart php8.5-fpm
 
 # ---------- Caddy repo & install ----------
 log "Installing Caddy…"
@@ -265,7 +257,7 @@ Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp
 EOF
 
 apt update -y
-apt install -y mariadb-server mariadb-client php8.3-mysql
+apt install -y mariadb-server mariadb-client php8.5-mysql
 
 # Secure MariaDB installation
 mysql_secure_installation
@@ -281,7 +273,7 @@ SQL
 
   PostgreSQL)
     log "Installing PostgreSQL…"
-    apt-get install -y postgresql php8.3-pgsql
+    apt-get install -y postgresql php8.5-pgsql
     systemctl enable --now postgresql
 
     log "Creating database and role…"
@@ -308,7 +300,7 @@ SQL
 
   SQLite)
     log "Using SQLite (no server install)."
-    apt-get install -y sqlite3 php8.3-sqlite3
+    apt-get install -y sqlite3 php8.5-sqlite3
     ;;
 esac
 
@@ -404,10 +396,9 @@ cat > /etc/caddy/Caddyfile <<EOF
 $HOSTNAME {
 $CADDY_BIND_LINE
     root * $INSTALL_PATH/public
-    php_fastcgi unix//run/php/php8.3-fpm.sock
+    php_fastcgi unix//run/php/php8.5-fpm.sock
     encode zstd gzip
     file_server
-    tls $TLS_EMAIL
     header -Server
     log {
         output file /var/log/loom/caddy.log
@@ -415,7 +406,7 @@ $CADDY_BIND_LINE
     # Adminer (randomized path)
     route /${ADMINER_SLUG}* {
         root * /usr/share/adminer
-        php_fastcgi unix//run/php/php8.3-fpm.sock
+        php_fastcgi unix//run/php/php8.5-fpm.sock
     }
     header * {
         Referrer-Policy "same-origin"
@@ -423,8 +414,8 @@ $CADDY_BIND_LINE
         X-Content-Type-Options nosniff
         X-Frame-Options DENY
         X-XSS-Protection "1; mode=block"
-        Content-Security-Policy: default-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; img-src https: data:; font-src 'self' data:; style-src 'self' 'unsafe-inline' https://rsms.me; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/; form-action 'self'; worker-src 'none'; frame-src 'none';
-        Permissions-Policy: accelerometer=(), autoplay=(), camera=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(self), usb=();
+        Content-Security-Policy "default-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; connect-src 'self'; img-src https: data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; form-action 'self'; worker-src 'none'; frame-src 'none';"
+        Permissions-Policy "accelerometer=(), autoplay=(), camera=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(self), usb=();"
     }
 }
 EOF
@@ -447,7 +438,7 @@ cat <<SUM
 
 • App path:          $INSTALL_PATH
 • Hostname:          https://$HOSTNAME
-• PHP-FPM:           php8.3-fpm (running)
+• PHP-FPM:           php8.5-fpm (running)
 • Web server:        Caddy (running)
 • Adminer URL:       https://$HOSTNAME/${ADMINER_SLUG}
 

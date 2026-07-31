@@ -103,12 +103,12 @@ bash <(wget -qO- https://raw.githubusercontent.com/getnamingo/loom/refs/heads/ma
 
 For detailed installation steps, see [install.md](docs/install.md)
 
-### Update
+### Upgrade
 
 To get started, copy the command below and paste it into your server terminal:
 
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/getnamingo/loom/refs/heads/main/docs/update.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/getnamingo/loom/refs/heads/main/docs/upgrade.sh)
 ```
 
 ## Support
