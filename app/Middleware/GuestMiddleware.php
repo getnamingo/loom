@@ -21,7 +21,10 @@ class GuestMiddleware extends Middleware
     public function __invoke(Request $request, RequestHandler $handler)
     {
         $response = $handler->handle($request);
-        if($this->container->get('auth')->isLogin()) {
+        if (
+            $this->container->get('auth')->isLogin()
+            && $request->getUri()->getPath() !== '/webauthn/login/verify'
+        ) {
             return redirect()->route('home');
         }
         return $response;
