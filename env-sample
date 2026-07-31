@@ -1,11 +1,16 @@
 APP_NAME='Loom'
 APP_ENV=public
-APP_URL=http://localhost
+APP_URL=https://example.com
+APP_DOMAIN=example.com
 WHOIS_SERVER=whois.example.com
 RDAP_SERVER=rdap.example.com
 
 LANG=en_US
 UI_LANG=us
+
+WEB_AUTHN_ENABLED=true
+#php -r 'echo bin2hex(random_bytes(32)), PHP_EOL;'
+WEBAUTHN_DUMMY_SECRET='generated-secret'
 
 DB_DRIVER=mysql
 DB_HOST=localhost
