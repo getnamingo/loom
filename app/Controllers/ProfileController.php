@@ -88,6 +88,7 @@ class ProfileController extends Controller
         } elseif ($webauthn) {
             $data['qrcodeDataUri'] = $qrcodeDataUri;
             $data['secret'] = $secret;
+            $data['weba'] = $webauthn;
             $data['isWebaEnabled'] = $isWebAuthnEnabled;
         } else {
             $data['qrcodeDataUri'] = $qrcodeDataUri;
