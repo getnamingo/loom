@@ -194,6 +194,8 @@ CREATE TABLE "transactions" (
     "description" TEXT NOT NULL,
     "amount" REAL NOT NULL,
     "currency" TEXT NOT NULL DEFAULT 'EUR',
+    "gateway" TEXT DEFAULT NULL,
+    "gateway_reference" TEXT DEFAULT NULL,
     "status" TEXT NOT NULL DEFAULT 'completed',
     "created_at" TEXT DEFAULT CURRENT_TIMESTAMP,
 
@@ -201,6 +203,7 @@ CREATE TABLE "transactions" (
 );
 
 CREATE INDEX idx_transactions_user_entity ON transactions(user_id, related_entity_type, related_entity_id);
+CREATE UNIQUE INDEX transactions_gateway_reference_unique ON transactions(gateway, gateway_reference);
 
 CREATE TABLE "providers" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -29,7 +29,7 @@ use Punic\Language;
 // }
 
 ini_set('session.cookie_httponly', '1');
-ini_set('session.cookie_samesite', 'Strict');
+ini_set('session.cookie_samesite', 'Lax');
 ini_set('session.cookie_lifetime', '0');
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -258,6 +258,9 @@ $csrfMiddleware = function ($request, $handler) use ($container) {
     $csrf = $container->get('csrf');
 
     // Skip CSRF for the specific path
+    if ($path && preg_match('#^/payment/[a-z0-9_-]+/(?:return|webhook)$#', $path)) {
+        return $handler->handle($request);
+    }
     if ($path && $path === '/webauthn/register/verify') {
         return $handler->handle($request);
     }
@@ -265,18 +268,6 @@ $csrfMiddleware = function ($request, $handler) use ($container) {
         return $handler->handle($request);
     }
     if ($path && $path === '/webauthn/login/verify') {
-        return $handler->handle($request);
-    }
-    if ($path && $path === '/webhook/adyen') {
-        return $handler->handle($request);
-    }
-    if ($path && $path === '/create-adyen-payment') {
-        return $handler->handle($request);
-    }
-    if ($path && $path === '/create-nicky-payment') {
-        return $handler->handle($request);
-    }
-    if ($path && $path === '/create-crypto-payment') {
         return $handler->handle($request);
     }
     if ($path && $path === '/clear-cache') {

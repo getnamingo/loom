@@ -198,10 +198,13 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   `description` TEXT NOT NULL,
   `amount` DECIMAL(12,2) NOT NULL,
   `currency` CHAR(3) NOT NULL DEFAULT 'EUR',
+  `gateway` VARCHAR(32) DEFAULT NULL,
+  `gateway_reference` VARCHAR(128) DEFAULT NULL,
   `status` ENUM('pending', 'completed', 'failed', 'cancelled') NOT NULL DEFAULT 'completed',
   `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY (`id`),
   INDEX (`user_id`, `related_entity_type`, `related_entity_id`),
+  UNIQUE KEY `transactions_gateway_reference_unique` (`gateway`, `gateway_reference`),
   CONSTRAINT `transactions_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

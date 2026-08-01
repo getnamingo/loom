@@ -32,38 +32,7 @@
     [data-bs-theme="dark"] .payment-provider-liqpay {
         background-image: url('/assets/liqpay-dark.svg');
     }
-
-    /* Fullscreen overlay */
-    #loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.8); /* Whiteout effect */
-        z-index: 9999; /* Ensure it appears above all content */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* Spinner container for alignment */
-    .spinner-container {
-        text-align: center;
-    }
-
-    /* Spinner size adjustment */
-    .spinner-border {
-        width: 3rem;
-        height: 3rem;
-    }
 </style>
-<div id="loading-overlay" style="display: none;">
-    <div class="spinner-container">
-        <div class="spinner-border text-primary" role="status"></div>
-        <p class="text-secondary mt-3">Processing your payment, please wait...</p>
-    </div>
-</div>
       <div class="page-wrapper">
         <!-- Page header -->
         <div class="page-header d-print-none">
@@ -239,7 +208,6 @@
         </div>
         {% include 'partials/footer.twig' %}
       </div>
-<script src="https://js.stripe.com/v3/"></script>
 <script>
 const enabledGateways = {{ enabledGateways|json_encode|raw }};
 
@@ -249,68 +217,31 @@ document.getElementById('depositForm').addEventListener('submit', function (e) {
     const formData = new FormData(this);
     const paymentMethod = formData.get('paymentMethod');
 
-    const handlers = {
-        stripe: () => {
-            const stripe = Stripe('{{ stripe_key }}');
-            sendPayment('/create-payment', formData, (data) => {
-                stripe.redirectToCheckout({ sessionId: data.id });
-            });
-        },
-        liqpay : () => {
-          document.getElementById('depositForm').action = '/create-liqpay-payment-page';
-          document.getElementById('depositForm').method = 'POST';
-          document.getElementById('depositForm').submit();
-        },
-        balance: () => {
-            sendPayment('/balance-payment', formData, (data) => {
-                window.location.href = data.invoice_url;
-            });
-        },
-        plata: () => {
-            sendPayment('/create-plata-payment', new FormData(document.getElementById('depositForm')), (data) => {
-                window.location.href = data.url;
-            });
-        },
-        adyen: () => {
-            sendPayment('/create-adyen-payment', formData, (data) => {
-                window.location.href = data.url;
-            });
-        },
-        now: () => {
-            sendPayment('/create-crypto-payment', formData, (data) => {
-                window.location.href = data.invoice_url;
-            });
-        },
-        nicky: () => {
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) overlay.style.display = 'flex';
-
-            sendPayment('/create-nicky-payment', formData, (data) => {
-                if (overlay) overlay.style.display = 'none';
-                if (data.invoice_url) {
-                    window.location.href = data.invoice_url;
-                } else {
-                    showError('Unexpected Response', 'The payment gateway did not return a valid payment URL.');
-                }
-            }, () => {
-                if (overlay) overlay.style.display = 'none';
-            });
-        }
-    };
+    if (paymentMethod === 'balance') {
+        sendPayment('/balance-payment', formData, (data) => {
+            window.location.href = data.invoice_url;
+        });
+        return;
+    }
 
     if (!enabledGateways.includes(paymentMethod)) {
         showError('{{ __("Error") }}', '{{ __("This payment method is not available.") }}');
         return;
     }
 
-    if (handlers[paymentMethod]) {
-        handlers[paymentMethod]();
-    } else {
-        showError('{{ __("Error") }}', '{{ __("Unknown payment method.") }}');
+    if (paymentMethod === 'liqpay') {
+        this.action = '/payment/liqpay/create';
+        this.method = 'POST';
+        this.submit();
+        return;
     }
+
+    sendPayment(`/payment/${encodeURIComponent(paymentMethod)}/create`, formData, (data) => {
+        window.location.href = data.url;
+    });
 });
 
-function sendPayment(url, formData, onSuccess, onFinally = null) {
+function sendPayment(url, formData, onSuccess) {
     fetch(url, {
         method: 'POST',
         body: formData,
@@ -329,9 +260,6 @@ function sendPayment(url, formData, onSuccess, onFinally = null) {
     .catch(err => {
         console.error(`Error in ${url}:`, err);
         showError('{{ __("Unexpected Error") }}', '{{ __("An unexpected error occurred. Please try again later. Ensure the payment gateway is properly configured.") }}');
-    })
-    .finally(() => {
-        if (typeof onFinally === 'function') onFinally();
     });
 }
 
@@ -339,4 +267,5 @@ function showError(title, text) {
     Swal.fire({ icon: 'error', title, text });
 }
 </script>
+<script src="/assets/modules/js/sweetalert2.min.js" defer></script>
 {% endblock %}

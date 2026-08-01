@@ -194,6 +194,8 @@ CREATE TABLE IF NOT EXISTS transactions (
      description TEXT NOT NULL,
      amount NUMERIC(12,2) NOT NULL,
      currency CHAR(3) NOT NULL DEFAULT 'EUR',
+     gateway VARCHAR(32),
+     gateway_reference VARCHAR(128),
      status VARCHAR(16) NOT NULL DEFAULT 'completed',
      created_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
@@ -201,6 +203,7 @@ CREATE TABLE IF NOT EXISTS transactions (
 );
 
 CREATE INDEX idx_transactions_user_entity ON transactions(user_id, related_entity_type, related_entity_id);
+CREATE UNIQUE INDEX transactions_gateway_reference_unique ON transactions(gateway, gateway_reference);
 
 CREATE TABLE IF NOT EXISTS providers (
      id SERIAL PRIMARY KEY,

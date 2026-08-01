@@ -64,8 +64,7 @@ $app->group('', function ($route) {
     $route->get('/update-password', PasswordController::class.':createUpdatePassword')->setName('update.password');
     $route->post('/update-password', PasswordController::class.':updatePassword');
 
-    $route->post('/webhook/adyen', FinancialsController::class .':webhookAdyen')->setName('webhookAdyen');
-    $route->post('/webhook/sumsub', ContactsController::class .':webhookSumsub')->setName('webhookSumsub');
+    $route->post('/payment/{gateway}/webhook', FinancialsController::class . ':paymentWebhook')->setName('payment.webhook');
 })->add(new GuestMiddleware($container));
 
 $app->group('', function ($route) {
@@ -116,19 +115,8 @@ $app->group('', function ($route) {
     $route->map(['GET', 'POST'], '/invoice/{invoice}/pay', FinancialsController::class . ':payInvoice')->setName('payInvoice');
     $route->map(['GET', 'POST'], '/deposit', FinancialsController::class .':deposit')->setName('deposit');
     $route->map(['GET', 'POST'], '/balance-payment', FinancialsController::class .':balancePayment')->setName('balancePayment');
-    $route->map(['GET', 'POST'], '/create-payment', FinancialsController::class .':createStripePayment')->setName('createStripePayment');
-    $route->map(['GET', 'POST'], '/create-liqpay-payment', FinancialsController::class .':createLiqpayPayment')->setName('createLiqpayPayment');
-    $route->map(['GET', 'POST'], '/create-plata-payment', FinancialsController::class .':createPlataPayment')->setName('createPlataPayment');
-    $route->map(['GET', 'POST'], '/create-liqpay-payment-page', FinancialsController::class .':createLiqPayPaymentPage')->setName('createLiqPayPaymentPage');
-    $route->map(['GET', 'POST'], '/create-adyen-payment', FinancialsController::class .':createAdyenPayment')->setName('createAdyenPayment');
-    $route->map(['GET', 'POST'], '/create-crypto-payment', FinancialsController::class .':createCryptoPayment')->setName('createCryptoPayment');
-    $route->map(['GET', 'POST'], '/create-nicky-payment', FinancialsController::class .':createNickyPayment')->setName('createNickyPayment');
-    $route->map(['GET', 'POST'], '/payment-success', FinancialsController::class .':successStripe')->setName('successStripe');
-    $route->map(['GET', 'POST'], '/payment-success-liqpay', FinancialsController::class .':successLiqpay')->setName('successLiqpay');
-    $route->map(['GET', 'POST'], '/payment-success-plata', FinancialsController::class .':successPlata')->setName('successPlata');
-    $route->map(['GET', 'POST'], '/payment-success-adyen', FinancialsController::class .':successAdyen')->setName('successAdyen');
-    $route->map(['GET', 'POST'], '/payment-success-crypto', FinancialsController::class .':successCrypto')->setName('successCrypto');
-    $route->map(['GET', 'POST'], '/payment-success-nicky', FinancialsController::class .':successNicky')->setName('successNicky');
+    $route->post('/payment/{gateway}/create', FinancialsController::class . ':createPayment')->setName('payment.create');
+    $route->map(['GET', 'POST'], '/payment/{gateway}/return', FinancialsController::class . ':paymentReturn')->setName('payment.return');
     $route->map(['GET', 'POST'], '/payment-cancel', FinancialsController::class .':cancel')->setName('cancel');
     $route->get('/transactions', FinancialsController::class .':transactions')->setName('transactions');
 
