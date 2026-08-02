@@ -44,6 +44,8 @@ $app->post('/lookup', HomeController::class .':lookup')->setName('lookup');
 $app->map(['GET', 'POST'], '/registrant-contact/{domain}', HomeController::class .':registrantContact')->setName('registrantContact');
 
 $app->post('/spark/domain/check', [SparkController::class, 'domainCheck']);
+$app->map(['GET', 'POST'], '/payment/{gateway}/return', FinancialsController::class . ':paymentReturn')->setName('payment.return');
+$app->post('/payment/{gateway}/webhook', FinancialsController::class . ':paymentWebhook')->setName('payment.webhook');
 
 $app->group('', function ($route) {
     $route->get('/register', AuthController::class . ':createRegister')->setName('register');
@@ -63,9 +65,6 @@ $app->group('', function ($route) {
     $route->get('/reset-password', PasswordController::class.':resetPassword')->setName('reset.password');
     $route->get('/update-password', PasswordController::class.':createUpdatePassword')->setName('update.password');
     $route->post('/update-password', PasswordController::class.':updatePassword');
-
-    $route->map(['GET', 'POST'], '/payment/{gateway}/return', FinancialsController::class . ':paymentReturn')->setName('payment.return');
-    $route->post('/payment/{gateway}/webhook', FinancialsController::class . ':paymentWebhook')->setName('payment.webhook');
 })->add(new GuestMiddleware($container));
 
 $app->group('', function ($route) {
