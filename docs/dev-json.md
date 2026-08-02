@@ -1,5 +1,7 @@
 # JSON for Development
 
+## New Provider Credentials
+
 ```json
 {
     "ssl": true,
@@ -12,6 +14,7 @@
     "client_id": "EXAMPLE-REG",
     "contactRoles": ["registrant", "admin", "tech", "billing"],
     "contactType": "int",
+    "autoCreateHosts": true,
     "required_fields": {
         "id_number": {
             "label": "Finnish ID Number",
@@ -29,6 +32,8 @@
 ```
 
 For thin registries: `"contactRoles": []`
+
+## New Provider Pricing
 
 ```json
 {
@@ -87,6 +92,8 @@ For thin registries: `"contactRoles": []`
     }
 }
 ```
+
+## Other Test Examples
 
 ```json
 {

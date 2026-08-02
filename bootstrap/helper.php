@@ -715,7 +715,6 @@ function getDomainConfig($domains, \Pinga\Db\PdoDatabase $db): array
             continue;
         }
         $contactType = strtolower((string) ($credentials['contactType'] ?? 'int'));
-
         if (!in_array($contactType, ['int', 'loc'], true)) {
             $contactType = 'int';
         }
@@ -736,6 +735,10 @@ function getDomainConfig($domains, \Pinga\Db\PdoDatabase $db): array
             'provider_id' => $matchedProvider['id'],
             'contact_roles' => $credentials['contactRoles'] ?? ['registrant','admin','tech','billing'],
             'contact_type' => $contactType,
+            'auto_create_hosts' => filter_var(
+                $credentials['autoCreateHosts'] ?? false,
+                FILTER_VALIDATE_BOOLEAN
+            ),
         ];
     }
 
@@ -832,6 +835,7 @@ function provisionService(\Pinga\Db\PdoDatabase $db, int $invoiceId, int $actorI
 
                 $roles = $domainData[0]['contact_roles'] ?? ['registrant','admin','tech','billing'];
                 $contactType = strtolower((string) ($domainData[0]['contact_type'] ?? 'int'));
+                $autoCreateHosts = $domainData[0]['auto_create_hosts'] ?? false;
 
                 if (!in_array($contactType, ['int', 'loc'], true)) {
                     $contactType = 'int';
@@ -945,6 +949,22 @@ function provisionService(\Pinga\Db\PdoDatabase $db, int $invoiceId, int $actorI
                 });
                 if (!empty($nameservers)) {
                     $domainParams['nss'] = $nameservers;
+
+                    if (isset($autoCreateHosts) && filter_var($autoCreateHosts, FILTER_VALIDATE_BOOLEAN)) {
+                        foreach ($nameservers as $host) {
+                            $host = strtolower(trim((string) $host));
+
+                            if ($host === '') {
+                                continue;
+                            }
+
+                            $hostParams = [
+                                'hostname' => $host,
+                            ];
+
+                            $hostCreate = $epp->hostCreate($hostParams);
+                        }
+                    }
                 }
 
                 if (!empty($roleContactIds['registrant'] ?? null)) {
