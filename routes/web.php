@@ -64,6 +64,7 @@ $app->group('', function ($route) {
     $route->get('/update-password', PasswordController::class.':createUpdatePassword')->setName('update.password');
     $route->post('/update-password', PasswordController::class.':updatePassword');
 
+    $route->map(['GET', 'POST'], '/payment/{gateway}/return', FinancialsController::class . ':paymentReturn')->setName('payment.return');
     $route->post('/payment/{gateway}/webhook', FinancialsController::class . ':paymentWebhook')->setName('payment.webhook');
 })->add(new GuestMiddleware($container));
 
@@ -116,7 +117,6 @@ $app->group('', function ($route) {
     $route->map(['GET', 'POST'], '/deposit', FinancialsController::class .':deposit')->setName('deposit');
     $route->map(['GET', 'POST'], '/balance-payment', FinancialsController::class .':balancePayment')->setName('balancePayment');
     $route->post('/payment/{gateway}/create', FinancialsController::class . ':createPayment')->setName('payment.create');
-    $route->map(['GET', 'POST'], '/payment/{gateway}/return', FinancialsController::class . ':paymentReturn')->setName('payment.return');
     $route->map(['GET', 'POST'], '/payment-cancel', FinancialsController::class .':cancel')->setName('cancel');
     $route->get('/transactions', FinancialsController::class .':transactions')->setName('transactions');
 
