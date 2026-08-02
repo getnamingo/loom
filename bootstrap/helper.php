@@ -592,12 +592,22 @@ function connectEpp(
     string $passphrase,
     string $clID,
     string $pw,
+    array $loginObjects = [],
     array $loginExtensions = []
 ) {
     $epp = EppRegistryFactory::create($registry);
     $epp->disableLogging();
 
-    // Default extensions only for 'generic' registry
+    // Default login objects only for 'generic' registry
+    if ($loginObjects === [] && $registry === 'generic') {
+        $loginObjects = [
+            'urn:ietf:params:xml:ns:domain-1.0',
+            'urn:ietf:params:xml:ns:contact-1.0',
+            'urn:ietf:params:xml:ns:host-1.0',
+        ];
+    }
+
+    // Default login extensions only for 'generic' registry
     if ($loginExtensions === [] && $registry === 'generic') {
         $loginExtensions = [
             'urn:ietf:params:xml:ns:secDNS-1.1',
@@ -621,6 +631,10 @@ function connectEpp(
         'passphrase'       => $passphrase ?? '',
         'allow_self_signed'=> filter_var(envi('SELF_SIGNED'), FILTER_VALIDATE_BOOLEAN),
     ];
+
+    if (!empty($loginObjects)) {
+        $epp->setLoginObjects($loginObjects);
+    }
 
     if (!empty($loginExtensions)) {
         $epp->setLoginExtensions($loginExtensions);
