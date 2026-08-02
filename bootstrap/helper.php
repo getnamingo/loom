@@ -714,6 +714,11 @@ function getDomainConfig($domains, \Pinga\Db\PdoDatabase $db): array
         if (!$credentials || !isset($credentials['auth']['username'], $credentials['auth']['password'])) {
             continue;
         }
+        $contactType = strtolower((string) ($credentials['contactType'] ?? 'int'));
+
+        if (!in_array($contactType, ['int', 'loc'], true)) {
+            $contactType = 'int';
+        }
 
         $results[] = [
             'domain' => $domainName,
@@ -729,7 +734,8 @@ function getDomainConfig($domains, \Pinga\Db\PdoDatabase $db): array
             'password' => $credentials['auth']['password'],
             'client_id' => $credentials['client_id'] ?? null,
             'provider_id' => $matchedProvider['id'],
-            'contact_roles' => $credentials['contactRoles'] ?? ['registrant','admin','tech','billing']
+            'contact_roles' => $credentials['contactRoles'] ?? ['registrant','admin','tech','billing'],
+            'contact_type' => $contactType,
         ];
     }
 
@@ -825,6 +831,11 @@ function provisionService(\Pinga\Db\PdoDatabase $db, int $invoiceId, int $actorI
                 );
 
                 $roles = $domainData[0]['contact_roles'] ?? ['registrant','admin','tech','billing'];
+                $contactType = strtolower((string) ($domainData[0]['contact_type'] ?? 'int'));
+
+                if (!in_array($contactType, ['int', 'loc'], true)) {
+                    $contactType = 'int';
+                }
 
                 $roleContactIds = [];
                 $fingerprints = [];
@@ -897,7 +908,7 @@ function provisionService(\Pinga\Db\PdoDatabase $db, int $invoiceId, int $actorI
 
                     $contactParams = [
                         'id'              => 'ct' . substr(md5(uniqid('', true)), 0, 8),
-                        'type'            => 'int',
+                        'type'            => $contactType,
                         'firstname'       => $firstname,
                         'lastname'        => $lastname,
                         'companyname'     => $rc['org']     ?? '',

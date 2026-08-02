@@ -11,6 +11,7 @@
     },
     "client_id": "EXAMPLE-REG",
     "contactRoles": ["registrant", "admin", "tech", "billing"],
+    "contactType": "int",
     "required_fields": {
         "id_number": {
             "label": "Finnish ID Number",
