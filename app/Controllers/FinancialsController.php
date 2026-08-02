@@ -565,6 +565,8 @@ class FinancialsController extends Controller
         $gateway = strtolower(trim($gateway));
         $definition = self::PAYMENT_GATEWAYS[$gateway] ?? null;
         $flash = $this->container->get('flash');
+        $redirectUrl = '/deposit';
+        $stage = 'verification';
 
         if (!$definition || !$definition['verify']) {
             $flash->addMessage('error', 'Unknown payment gateway.');
@@ -608,6 +610,7 @@ class FinancialsController extends Controller
                      * This must be idempotent because both the browser return
                      * and provider webhook may report the same payment.
                      */
+                    $stage = 'settlement';
                     $this->processPaidPayment($payment);
 
                     $message = ($payment['type'] ?? null) === 'invoice'
@@ -633,11 +636,14 @@ class FinancialsController extends Controller
 
             return $response->withHeader('Location', $redirectUrl)->withStatus(302);
         } catch (\Throwable $e) {
-            error_log("Payment return processing failed for {$gateway}: " . $e->getMessage());
+            error_log(
+                "Payment return {$stage} failed for {$gateway}: "
+                . get_class($e) . ': ' . $e->getMessage()
+            );
 
             $flash->addMessage('error',    'We could not verify your payment. Please contact support if the payment was charged.');
 
-            return $response->withHeader('Location', '/deposit')->withStatus(302);
+            return $response->withHeader('Location', $redirectUrl)->withStatus(302);
         }
     }
 
