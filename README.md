@@ -35,11 +35,11 @@ Loom works with a variety of external services through its modular architecture.
 - **.fi** – ✅
 - **.it.com** – ✅
 - **Tucows Registry** – ✅
+- **Hello Registry** – ✅
 - **.ua** – ✅
 - **CoCCA** – ✅🧪
 - **GoDaddy Registry** – ✅🧪
 - **Google** – ✅🧪
-- **Hello Registry** – ✅🧪
 - **Identity Digital** – ✅🧪
 - **VeriSign** – ✅🧪
 
@@ -66,6 +66,8 @@ Loom works with a variety of external services through its modular architecture.
 - **Stripe** – ✅
 - **LiqPay** – ✅
 - **plata by mono** – ✅
+- **Nicky.me** – ✅
+- **NOWPayments** – ✅
 - **Revolut Pay** – *coming soon*
 - **PayPal** – *coming soon*
 - **Mollie** – *coming soon*
