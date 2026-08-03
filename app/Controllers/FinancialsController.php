@@ -1899,32 +1899,6 @@ class FinancialsController extends Controller
         return $this->jsonResponse($response, ['error' => $message], 502);
     }
 
-    public function createLiqPayPaymentPage(Request $req, Response $res)
-    {
-        $post = $req->getParsedBody();
-        $amount = isset($post['amount']) ? (float)$post['amount'] : (float)($_SESSION['pending_invoice_amount'] ?? 0);
-        $invoiceId = $_SESSION['pending_invoice_id'] ?? null;
-
-        $orderPrefix = $invoiceId ? ('inv-' . (int)$invoiceId) : ('dep-' . ((int)($_SESSION['auth_user_id'] ?? 0)));
-        $orderId = $orderPrefix . '.' . uniqid('', true);
-
-        $liqpay = new LiqPay(envi('LIQPAY_PUBLIC_KEY'), envi('LIQPAY_PRIVATE_KEY'));
-        $lang = strtolower(substr($_SESSION['_lang'] ?? 'en', 0, 2));
-        $params = [
-            'version'     => 3,
-            'action'      => 'pay',
-            'amount'      => $amount,
-            'currency'    => $_SESSION['_currency'] ?? 'USD',
-            'description' => $invoiceId ? ("Payment for Invoice #{$invoiceId}") : 'Account balance deposit',
-            'language'    => (in_array($lang, ['uk','en']) ? $lang : 'en'),
-            'order_id'    => $orderId,
-            'result_url'  => rtrim(envi('APP_URL'), '/') . '/payment-success-liqpay?order_id=' . rawurlencode($orderId),
-        ];
-        $raw = $liqpay->cnb_form_raw($params); // ['url','data','signature']
-
-        return $this->view->render($res, 'admin/financials/liqpay_post_bridge.twig', ['raw' => $raw]);
-    }
-
     /**
      * Settle first, then provision outside the payment transaction.
      *
