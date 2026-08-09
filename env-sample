@@ -20,7 +20,7 @@ DB_PASSWORD=
 DB_PORT=3306
 
 #mailer settings (Driver = smtp, utopia or msg [for local message broker]; Api Provder = sendgrid or mailgun)
-
+#generate MSG_API_TOKEN with php -r 'echo bin2hex(random_bytes(32)), PHP_EOL;'
 MAIL_DRIVER=none
 MAIL_HOST=smtp.mailtrap.io
 MAIL_PORT=2525
