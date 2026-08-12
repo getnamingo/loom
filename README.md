@@ -63,12 +63,13 @@ Loom works with a variety of external services through its modular architecture.
 ### Payment
 
 - **Balance** – ✅
-- **Stripe** – ✅
 - **LiqPay** – ✅
-- **plata by mono** – ✅
 - **Nicky.me** – ✅
 - **NOWPayments** – ✅
-- **Revolut Pay** – *coming soon*
+- **plata by mono** – ✅
+- **Revolut** – ✅
+- **Revolut Pay** – ✅
+- **Stripe** – ✅
 - **PayPal** – *coming soon*
 - **Mollie** – *coming soon*
 - **Razorpay** – *coming soon*
@@ -103,7 +104,7 @@ To get started, copy the command below and paste it into your server terminal:
 bash <(wget -qO- https://raw.githubusercontent.com/getnamingo/loom/refs/heads/main/docs/install.sh)
 ```
 
-For detailed installation steps, see [install.md](docs/install.md)
+For detailed installation steps, see [install.md](docs/install.md). For payment gateway configuration, see the [Namingo Registry Payment Guide](https://github.com/getnamingo/registry/blob/main/docs/payment.md).
 
 ### Upgrade
 
