@@ -12,6 +12,7 @@
  */
 
 use App\Lib\Logger;
+use App\Services\Provisioning\ProvisioningService;
 use DI\Container;
 use Slim\Csrf\Guard;
 use Slim\Factory\AppFactory;
@@ -78,6 +79,10 @@ $container->set('router', function () use ($routeParser) {
 
 $container->set('db', function () use ($db) {
     return $db;
+});
+
+$container->set(ProvisioningService::class, function ($container) {
+    return ProvisioningService::createDefault($container->get('db'));
 });
 
 $container->set('pdo', function () use ($pdo) {

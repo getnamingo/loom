@@ -13,6 +13,7 @@
 
 namespace App\Controllers;
 
+use App\Services\Provisioning\ProvisioningService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Mpociot\VatCalculator\VatCalculator;
@@ -2217,7 +2218,7 @@ class FinancialsController extends Controller
      * Settle first, then provision outside the payment transaction.
      *
      * This may run more than once because both the browser return and webhook can
-     * report the same payment. provisionService() must therefore be idempotent.
+     * report the same payment. ProvisioningService must therefore be idempotent.
      */
     private function processPaidPayment(array $payment): void
     {
@@ -2233,45 +2234,18 @@ class FinancialsController extends Controller
 
     private function provisionPaidInvoice(int $invoiceId, int $userId): void
     {
-        $db = $this->container->get('db');
-
-        // Skip invoices with no paid, pending/failed orders to provision.
-        $needsProvisioning = (int)$db->selectValue(
-            'SELECT COUNT(*)
-             FROM orders o
-             INNER JOIN invoices i ON i.id = o.invoice_id
-             WHERE o.invoice_id = ?
-               AND o.user_id = ?
-               AND i.payment_status = ?
-               AND o.status IN (?, ?)',
-            [$invoiceId, $userId, 'paid', 'pending', 'failed']
-        );
-
-        if ($needsProvisioning === 0) {
-            return;
-        }
-
         try {
-            \provisionService($db, $invoiceId, $userId);
+            $this->container
+                ->get(ProvisioningService::class)
+                ->provisionInvoice($invoiceId, $userId);
         } catch (\Throwable $exception) {
-            $db->exec(
-                'UPDATE orders
-                 SET status = ?
-                 WHERE invoice_id = ?
-                   AND user_id = ?
-                   AND status = ?',
-                ['failed', $invoiceId, $userId, 'pending']
-            );
-
-            $now = (new \DateTimeImmutable())->format('Y-m-d H:i:s.v');
-            $db->insert('service_logs', [
-                'service_id' => 0,
-                'event'      => 'provision_failed',
-                'actor_type' => 'system',
-                'actor_id'   => $userId ?? 0,
-                'details'    => 'invoice ' . $invoiceId . '|' . $e->getMessage(),
-                'created_at' => $now
-            ]);
+            // Payment settlement must remain successful. ProvisioningService
+            // marks and logs each failed order for the retry worker.
+            error_log(sprintf(
+                'Provisioning failed after invoice %d was paid: %s',
+                $invoiceId,
+                $exception->getMessage()
+            ));
         }
     }
 
