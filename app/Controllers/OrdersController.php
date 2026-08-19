@@ -14,6 +14,7 @@
 namespace App\Controllers;
 
 use App\Models\Orders;
+use App\Services\Provisioning\ProvisioningService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Container\ContainerInterface;
@@ -179,10 +180,10 @@ class OrdersController extends Controller
             }
 
             try {
-                provisionService($db, $order_details['invoice_id'], $_SESSION["auth_user_id"]);
+                $this->container
+                    ->get(ProvisioningService::class)
+                    ->provisionOrder((int)$order_details['id'], (int)$_SESSION["auth_user_id"]);
                 $this->container->get('flash')->addMessage('success', 'Order ' . $order_details['id'] . ' has been reprovisioned successfully.');
-            } catch (\Exception $e) {
-                $this->container->get('flash')->addMessage('error', 'Reprovision failed: ' . $e->getMessage());
             } catch (\Throwable $e) {
                 $this->container->get('flash')->addMessage('error', 'Reprovision failed: ' . $e->getMessage());
             }

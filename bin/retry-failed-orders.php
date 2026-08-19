@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../bootstrap/helper.php';
 
+use App\Services\Provisioning\ProvisioningService;
 use Pinga\Db\PdoDataSource;
 use Pinga\Db\PdoDatabase;
 use Dotenv\Dotenv;
@@ -21,61 +23,32 @@ if ($_ENV['DB_USERNAME'] !== '') $dataSource->setUsername($_ENV['DB_USERNAME']);
 if ($_ENV['DB_PASSWORD'] !== '') $dataSource->setPassword($_ENV['DB_PASSWORD']);
 
 $db = PdoDatabase::fromDataSource($dataSource);
-
-// Reprovisioning function
-function reprovisionOrder(PdoDatabase $db, array $order): bool {
-    echo "Re-attempting provisioning for order ID {$order['id']}\n";
-
-    // Simulated success
-    $success = true;
-
-    if ($success) {
-        $db->update('orders', [
-            'status'     => 'active',
-            'paid_at'    => $order['paid_at'] ?? date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ], [
-            'id' => $order['id'],
-        ]);
-
-        $exists = $db->select('SELECT COUNT(*) AS count FROM services WHERE order_id = ?', [$order['id']]);
-        if ((int)($exists[0]['count'] ?? 0) === 0) {
-            $db->insert('services', [
-                'user_id'    => $order['user_id'],
-                'provider_id'=> null,
-                'order_id'   => $order['id'],
-                'type'       => $order['service_type'],
-                'status'     => 'active',
-                'config'     => $order['service_data'],
-                'created_at' => date('Y-m-d H:i:s'),
-            ]);
-            echo "Created related service for order ID {$order['id']}\n";
-        }
-
-        return true;
-    }
-
-    return false;
-}
+$provisioning = ProvisioningService::createDefault($db);
 
 try {
     // 30-day threshold using PHP datetime
     $threshold = (new DateTime())->modify('-30 days')->format('Y-m-d H:i:s');
 
     $orders = $db->select(
-        'SELECT * FROM orders WHERE status = ? AND created_at >= ?',
+        'SELECT id FROM orders WHERE status = ? AND created_at >= ? ORDER BY id ASC',
         ['failed', $threshold]
     );
 
     foreach ($orders ?? [] as $order) {
-        $success = reprovisionOrder($db, $order);
-        if (!$success) {
-            echo "Order ID {$order['id']} still failed.\n";
-            // Optionally log or notify
+        $orderId = (int)$order['id'];
+        echo "Re-attempting provisioning for order ID {$orderId}\n";
+
+        try {
+            $provisioned = $provisioning->provisionOrder($orderId);
+            echo $provisioned
+                ? "Order ID {$orderId} provisioned successfully.\n"
+                : "Order ID {$orderId} no longer requires provisioning.\n";
+        } catch (Throwable $exception) {
+            echo "Order ID {$orderId} still failed: {$exception->getMessage()}\n";
         }
     }
 
 } catch (Throwable $e) {
-    echo 'Error: ' . $e->getMessage();
+    echo 'Error: ' . $e->getMessage() . "\n";
     exit(1);
 }
