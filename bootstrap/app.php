@@ -254,7 +254,8 @@ $container->set('validator', function ($container) {
 });
 
 $container->set('csrf', function($container) use ($responseFactory) {
-    return new Slim\Csrf\Guard($responseFactory);
+    return (new Slim\Csrf\Guard($responseFactory))
+        ->setPersistentTokenMode(true);
 });
 
 $app->add(new \App\Middleware\AuditMiddleware($container));
@@ -283,9 +284,6 @@ $csrfMiddleware = function ($request, $handler) use ($container) {
         return $handler->handle($request);
     }
     if ($path && $path === '/clear-cache') {
-        return $handler->handle($request);
-    }
-    if ($path && $path === '/spark/domain/check') {
         return $handler->handle($request);
     }
     if ($path && $path === '/lookup') {

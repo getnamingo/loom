@@ -177,7 +177,7 @@ install_php_repo
 apt update
 
 log "Installing PHP"
-apt install -y composer php8.5 php8.5-cli php8.5-common php8.5-fpm php8.5-bcmath php8.5-bz2 php8.5-curl php8.5-ds php8.5-gd php8.5-gmp php8.5-igbinary php8.5-imap php8.5-intl php8.5-mbstring php8.5-readline php8.5-redis php8.5-soap php8.5-swoole php8.5-uuid php8.5-xml php8.5-zip ufw git unzip bzip2 net-tools whois
+apt install -y composer php8.5 php8.5-apcu php8.5-cli php8.5-common php8.5-fpm php8.5-bcmath php8.5-bz2 php8.5-curl php8.5-ds php8.5-gd php8.5-gmp php8.5-igbinary php8.5-imap php8.5-intl php8.5-mbstring php8.5-readline php8.5-redis php8.5-soap php8.5-swoole php8.5-uuid php8.5-xml php8.5-zip ufw git unzip bzip2 net-tools whois
 
 # Update php.ini (FPM)
 set_php_ini_value "/etc/php/8.5/fpm/php.ini" "session.cookie_secure" "1"

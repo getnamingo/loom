@@ -158,6 +158,8 @@ esac
 echo "Stopping services..."
 systemctl stop caddy
 
+apt install -y php8.5-apcu
+
 # Clear cache
 echo "Clearing cache..."
 php "$loom_path/bin/clear-cache.php"

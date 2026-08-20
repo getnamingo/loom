@@ -12,7 +12,7 @@ apt install -y curl software-properties-common ufw
 
 add-apt-repository -y ppa:ondrej/php
 
-apt install -y bzip2 composer git net-tools php8.5 php8.5-bcmath php8.5-bz2 php8.5-cli php8.5-common php8.5-curl php8.5-ds php8.5-fpm php8.5-gd php8.5-gmp php8.5-igbinary php8.5-imap php8.5-intl php8.5-mbstring php8.5-readline php8.5-redis php8.5-soap php8.5-swoole php8.5-uuid php8.5-xml php8.5-zip unzip ufw wget whois
+apt install -y bzip2 composer git net-tools php8.5 php8.5-apcu php8.5-bcmath php8.5-bz2 php8.5-cli php8.5-common php8.5-curl php8.5-ds php8.5-fpm php8.5-gd php8.5-gmp php8.5-igbinary php8.5-imap php8.5-intl php8.5-mbstring php8.5-readline php8.5-redis php8.5-soap php8.5-swoole php8.5-uuid php8.5-xml php8.5-zip unzip ufw wget whois
 ```
 
 ### Debian 12 / 13
@@ -30,7 +30,7 @@ echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org
 
 apt update
 
-apt install -y bzip2 composer git net-tools php8.5 php8.5-bcmath php8.5-bz2 php8.5-cli php8.5-common php8.5-curl php8.5-ds php8.5-fpm php8.5-gd php8.5-gmp php8.5-igbinary php8.5-imap php8.5-intl php8.5-mbstring php8.5-readline php8.5-redis php8.5-soap php8.5-swoole php8.5-uuid php8.5-xml php8.5-zip unzip ufw wget whois
+apt install -y bzip2 composer git net-tools php8.5 php8.5-apcu php8.5-bcmath php8.5-bz2 php8.5-cli php8.5-common php8.5-curl php8.5-ds php8.5-fpm php8.5-gd php8.5-gmp php8.5-igbinary php8.5-imap php8.5-intl php8.5-mbstring php8.5-readline php8.5-redis php8.5-soap php8.5-swoole php8.5-uuid php8.5-xml php8.5-zip unzip ufw wget whois
 ```
 
 ### Configure PHP Settings:

@@ -55,8 +55,9 @@
                 <div class="card mt-4">
                   <div class="card-body">
                     <form class="row g-2 align-items-stretch" onsubmit="checkDomain(event)">
+                      {{ csrf.field | raw }}
                       <div class="col-md-9">
-                        <input type="text" id="domainInput" class="form-control form-control-lg rounded" placeholder="Enter your domain name" aria-label="Domain Name" autocapitalize="none" required>
+                        <input type="text" id="domainInput" name="domains[]" class="form-control form-control-lg rounded" placeholder="Enter your domain name" aria-label="Domain Name" autocapitalize="none" required>
                       </div>
                       <div class="col-md-3 d-grid">
                         <button class="btn btn-primary btn-lg w-100 rounded" type="submit">{{ __('Search') }}</button>
@@ -225,10 +226,7 @@ async function checkDomain(event) {
     try {
         const response = await fetch('/spark/domain/check', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ domains: [domain] })
+            body: new FormData(event.currentTarget)
         });
 
         const contentType = response.headers.get("content-type") || "";
@@ -243,6 +241,16 @@ async function checkDomain(event) {
             const msg = match ? match[1] : 'An unknown error occurred.';
 
             resultContainer.innerHTML = `<div class="alert alert-danger">${msg}</div>`;
+            return;
+        }
+
+        if (response.status === 429) {
+            const retryAfter = response.headers.get('Retry-After') || '60';
+
+            resultContainer.innerHTML =
+                `<div class="alert alert-warning">
+                    Too many domain checks. Please try again in ${retryAfter} seconds.
+                </div>`;
             return;
         }
 

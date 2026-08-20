@@ -369,14 +369,58 @@ class SparkController extends Controller
                 ->withStatus(302);
         }
 
-        $params = json_decode($request->getBody()->getContents(), true);
-        $db = $this->container->get('db');
-        $domains = array_map(
-            fn($d) => idn_to_ascii(mb_strtolower($d, 'UTF-8'), IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46)
-                ?: mb_strtolower($d, 'UTF-8'),
-            $params['domains'] ?? []
+        $limit = 10;
+        $window = 60;
+
+        $ip = $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown';
+        $bucket = intdiv(time(), $window);
+        $key = 'domain-check:' . hash('sha256', $ip . ':' . $bucket);
+
+        apcu_add($key, 0, $window * 2);
+        $count = apcu_inc($key);
+
+        if ($count > $limit) {
+            $retryAfter = $window - (time() % $window);
+
+            $response->getBody()->write(json_encode([
+                'success' => false,
+                'message' => 'Too many domain checks. Please try again shortly.',
+            ]));
+
+            return $response
+                ->withHeader('Content-Type', 'application/json; charset=UTF-8')
+                ->withHeader('Retry-After', (string) $retryAfter)
+                ->withStatus(429);
+        }
+
+        $params = (array) $request->getParsedBody();
+        $requestedDomains = $params['domains'] ?? null;
+
+        if (
+            !is_array($requestedDomains) ||
+            !array_is_list($requestedDomains) ||
+            count($requestedDomains) !== 1 ||
+            !is_string($requestedDomains[0]) ||
+            trim($requestedDomains[0]) === ''
+        ) {
+            $response->getBody()->write(json_encode([
+                'success' => false,
+                'message' => 'Exactly one domain is required.',
+            ], JSON_UNESCAPED_UNICODE));
+
+            return $response
+                ->withHeader('Content-Type', 'application/json; charset=UTF-8')
+                ->withStatus(422);
+        }
+
+        $domain = mb_strtolower(trim($requestedDomains[0]), 'UTF-8');
+        $asciiDomain = idn_to_ascii(
+            $domain,
+            IDNA_DEFAULT,
+            INTL_IDNA_VARIANT_UTS46
         );
 
+        $domains = [$asciiDomain ?: $domain];
         $domainData = getDomainConfig($domains, $db);
 
         if (empty($domainData) || !isset($domainData[0]['tld'])) {
