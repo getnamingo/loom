@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS users (
     nin_type VARCHAR(20) CHECK (nin_type IN ('personal', 'business')),
     validation VARCHAR(1) CHECK (validation IN ('0', '1', '2', '3', '4')),
     validation_stamp TIMESTAMP(3),
-    validation_log VARCHAR(255),
+    validation_log TEXT DEFAULT NULL,
     currency CHAR(3) NOT NULL DEFAULT 'EUR',
     account_balance NUMERIC(12,2) NOT NULL DEFAULT 0.00,
     credit_limit NUMERIC(12,2) NOT NULL DEFAULT 0.00
@@ -268,7 +268,7 @@ CREATE TABLE IF NOT EXISTS contact (
         'serverDeleteProhibited','serverTransferProhibited','serverUpdateProhibited')),
      validation VARCHAR(1) CHECK (validation IN ('0', '1', '2', '3', '4')),
      validation_stamp TIMESTAMP(3),
-     validation_log VARCHAR(255),
+     validation_log TEXT DEFAULT NULL,
     FOREIGN KEY (clid) REFERENCES users(id) ON DELETE RESTRICT,
     FOREIGN KEY (crid) REFERENCES users(id) ON DELETE RESTRICT,
     FOREIGN KEY (upid) REFERENCES users(id) ON DELETE RESTRICT

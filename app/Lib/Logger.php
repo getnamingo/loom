@@ -47,7 +47,7 @@ class Logger extends \Monolog\Logger
 
         if (empty($config)) {
             $config = [
-                'logFile' => "{$LOG_PATH}/foundry.log", // Base log name
+                'logFile' => "{$LOG_PATH}/loom.log", // Base log name
                 'logLevel' => \Monolog\Logger::DEBUG,
                 'maxFiles' => $maxFiles,
             ];
@@ -134,7 +134,7 @@ class Logger extends \Monolog\Logger
         if ($enable) {
             self::htmlError();
         } else {
-            $logger = new Logger('Foundry');
+            $logger = new Logger('Loom');
             ErrorHandler::register($logger);
 
             set_exception_handler(function ($e) use ($logger) {
