@@ -409,6 +409,10 @@ class ContactsController extends Controller
     
     public function validateContact(Request $request, Response $response, $args) 
     {
+        if ($_SESSION["auth_roles"] != 0) {
+            return $response->withHeader('Location', '/contacts')->withStatus(302);
+        }
+
         $db = $this->container->get('db');
 
         $verifyPhone  = envi('VALIDATE_PHONE');
@@ -557,6 +561,10 @@ class ContactsController extends Controller
 
     public function approveContact(Request $request, Response $response) 
     {
+        if ($_SESSION["auth_roles"] != 0) {
+            return $response->withHeader('Location', '/contacts')->withStatus(302);
+        }
+
         if ($request->getMethod() === 'POST') {
             $db = $this->container->get('db');
             $verifyPhone  = envi('VALIDATE_PHONE');
@@ -1022,64 +1030,6 @@ class ContactsController extends Controller
         
         //}
 
-    }
-
-    public function webhookSumsub(Request $request, Response $response)
-    {
-        $body = $request->getBody()->getContents();
-        $data = json_decode($body, true);
-        $db = $this->container->get('db');
-
-        // Validate input
-        if (!isset($data['externalUserId']) || !isset($data['type'])) {
-            $response->getBody()->write('Missing required fields');
-            return $response->withStatus(400);
-        }
-
-        $identifier = $data['externalUserId'];
-        $type = $data['type'];
-
-        // Only process applicantReviewed type
-        if ($type === 'applicantReviewed') {
-            $answer = $data['reviewResult']['reviewAnswer'] ?? null;
-            switch ($answer) {
-                case 'GREEN':
-                    $verify = '4'; // verified
-                    break;
-                case 'RED':
-                    $verify = '0'; // failed
-                    break;
-                default:
-                    // Ignore anything else
-                    $response->getBody()->write('Ignored (unhandled reviewAnswer)');
-                    return $response->withStatus(202);
-            }
-            $v_log = $data; // store full webhook for audit
-            $clid = $data['applicantId'] ?? null;
-
-            $currentDateTime = new \DateTime();
-            $stamp = $currentDateTime->format('Y-m-d H:i:s.v');
-            
-            $db->update(
-                'contact',
-                [
-                    'validation' => $verify,
-                    'validation_stamp' => $stamp,
-                    'validation_log' => $_SESSION['auth_user_id'] . '|automatic|Validated via SumSub',
-                    //'upid' => $clid,
-                    'lastupdate' => $stamp
-                ],
-                [
-                    'identifier' => $identifier
-                ]
-            );
-
-            $response->getBody()->write('OK');
-            return $response->withStatus(200);
-        }
-
-        $response->getBody()->write('Ignored');
-        return $response->withStatus(202);
     }
 
 }

@@ -49,15 +49,15 @@
                 <div class="card-header">
                   <h3 class="card-title">{{ __('Contact') }} {{ contact.identifier }}&nbsp;
                   {% if validation_enabled is not null %}
-                    <span class="status {% if contact_valid == 0 %}status-warning{% elseif contact_valid == 1 %}status-success{% elseif contact_valid == 2 %}status-success{% elseif contact_valid == 3 %}status-info{% endif %}" title="{% if contact_valid == 0 %}Pending Validation{% elseif contact_valid == 1 %}Validated by Phone{% elseif contact_valid == 2 %}Validated by Email{% elseif contact_valid == 3 %}Validated by Postal Mail{% endif %}">
+                    <span class="status {% if contact_valid == 0 %}status-warning{% elseif contact_valid == 1 %}status-success{% elseif contact_valid == 2 %}status-success{% elseif contact_valid == 3 %}status-info{% endif %}" title="{% if contact_valid == 0 %}Pending Validation{% elseif contact_valid == 1 %}Validated{% elseif contact_valid == 2 %}Validated{% elseif contact_valid == 3 %}Validated{% endif %}">
                         {% if contact_valid == 0 %}
                             {{ __('Pending Validation') }}
                         {% elseif contact_valid == 1 %}
-                            {{ __('Validated by Phone') }}
+                            {{ __('Validated') }}
                         {% elseif contact_valid == 2 %}
-                            {{ __('Validated by Email') }}
+                            {{ __('Validated') }}
                         {% elseif contact_valid == 3 %}
-                            {{ __('Validated by Postal Mail') }}
+                            {{ __('Validated') }}
                         {% endif %}
                     </span>
                 {% endif %}</h3>
