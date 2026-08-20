@@ -145,7 +145,7 @@ class OrdersController extends Controller
             'otherProducts' => $otherProducts,
             'domainPrices' => $domainPrices,
             'domainPricingTable' => $domainPricingTable,
-            'currency' => $_SESSION['_currency'] ?? 'EUR'
+            'currency' => $_SESSION['_currency'] ?? defaultCurrency()
         ]);
     }
 

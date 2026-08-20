@@ -60,6 +60,15 @@ function envi($var, $default=null)
     return $default;
 }
 
+function defaultCurrency(): string
+{
+    $currency = strtoupper(trim((string) envi('DEFAULT_CURRENCY', 'EUR')));
+
+    return \Punic\Currency::getNumericCode($currency) !== ''
+        ? $currency
+        : 'EUR';
+}
+
 function validateWebAuthnClientData(string $encodedClientData): string
 {
     $clientDataJSON = base64_decode($encodedClientData, true);

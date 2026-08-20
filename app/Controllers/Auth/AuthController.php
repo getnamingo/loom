@@ -91,6 +91,12 @@ class AuthController extends Controller
             try {
                 $db->beginTransaction();
 
+                $db->update(
+                    'users',
+                    ['currency' => defaultCurrency()],
+                    ['id' => $auth]
+                );
+
                 $types = ['owner', 'billing', 'tech', 'abuse'];
 
                 foreach ($types as $type) {

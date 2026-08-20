@@ -116,6 +116,7 @@ class UsersController extends Controller
                         'verified'             => $verified,
                         'roles_mask'           => $roles_mask,
                         'status'               => $status,
+                        'currency'             => defaultCurrency(),
                         'registered'           => \time(),
                         'password_last_updated'=> date('Y-m-d H:i:s'),
                     ]);

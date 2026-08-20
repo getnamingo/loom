@@ -204,9 +204,9 @@ $container->set('view', function ($container) {
     if (isset($_SESSION['auth_user_id'])) {
         $db = $container->get('db');
         $user_data = $db->selectRow("SELECT id, currency FROM users WHERE id = ? LIMIT 1", [$_SESSION['auth_user_id']]);
-        $_SESSION['_currency'] = $user_data['currency'] ?? 'EUR';
+        $_SESSION['_currency'] = $user_data['currency'] ?? defaultCurrency();
     } else {
-        $_SESSION['_currency'] = 'EUR';
+        $_SESSION['_currency'] = defaultCurrency();
     }
 
     // Make it accessible in templates
